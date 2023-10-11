@@ -17,6 +17,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1', routes);
 
+app.get('/', async (req: Request, res: Response) => {
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: 'Welcome HTTP SERVER',
+  });
+});
 
 //global error handler
 app.use(globalErrorHandler);
