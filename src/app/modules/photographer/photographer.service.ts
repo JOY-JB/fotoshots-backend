@@ -7,7 +7,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 import { IUserFilterRequest } from '../user/user.interface';
 
-const getAllClient = async (
+const getAllPhotographers = async (
   filters: IUserFilterRequest,
   options: IPaginationOptions
 ): Promise<IGenericResponse<User[]>> => {
@@ -15,8 +15,6 @@ const getAllClient = async (
     paginationHelpers.calculatePagination(options);
 
   const andConditions = [];
-
-  console.log(filters.email);
 
   if (Object.keys(filters).length > 0) {
     andConditions.push({
@@ -37,11 +35,11 @@ const getAllClient = async (
     orderBy: {
       [sortBy]: sortOrder,
     },
-    where: { ...whereConditions, role: 'CLIENT' },
+    where: { ...whereConditions, role: 'PHOTOGRAPHER' },
   });
 
   const total = await prisma.user.count({
-    where: { ...whereConditions, role: 'CLIENT' },
+    where: { ...whereConditions, role: 'PHOTOGRAPHER' },
   });
 
   return {
@@ -54,34 +52,36 @@ const getAllClient = async (
   };
 };
 
-const getClientById = async (id: string): Promise<User> => {
-  const clientData = await prisma.user.findUnique({
+const getPhotographerById = async (id: string): Promise<User> => {
+  console.log(id);
+
+  const photographerData = await prisma.user.findUnique({
     where: {
       id,
-      role: 'CLIENT',
+      role: 'PHOTOGRAPHER',
     },
   });
 
-  if (!clientData) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Client does not exist!');
+  if (!photographerData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer does not exist!');
   }
 
-  return clientData;
+  return photographerData;
 };
 
-const updateClientById = async (
+const updatePhotographerById = async (
   id: string,
   payload: Partial<User>
 ): Promise<User> => {
-  const clientData = await prisma.user.findUnique({
+  const photographerData = await prisma.user.findUnique({
     where: {
       id,
-      role: 'CLIENT',
+      role: 'PHOTOGRAPHER',
     },
   });
 
-  if (!clientData) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Client does not exist!');
+  if (!photographerData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer does not exist!');
   }
 
   const result = await prisma.user.update({
@@ -93,16 +93,16 @@ const updateClientById = async (
   return result;
 };
 
-const deleteClientById = async (id: string): Promise<User> => {
-  const clientData = await prisma.user.findUnique({
+const deletePhotographerById = async (id: string): Promise<User> => {
+  const photographerData = await prisma.user.findUnique({
     where: {
       id,
-      role: 'CLIENT',
+      role: 'PHOTOGRAPHER',
     },
   });
 
-  if (!clientData) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Client does not exist!');
+  if (!photographerData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer does not exist!');
   }
 
   const result = await prisma.user.delete({
@@ -113,9 +113,9 @@ const deleteClientById = async (id: string): Promise<User> => {
   return result;
 };
 
-export const clientService = {
-  getAllClient,
-  getClientById,
-  updateClientById,
-  deleteClientById,
+export const photographerService = {
+  getAllPhotographers,
+  getPhotographerById,
+  updatePhotographerById,
+  deletePhotographerById,
 };
