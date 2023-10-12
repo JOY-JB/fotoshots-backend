@@ -11,7 +11,7 @@ export type IUserResponse = {
 };
 
 export type IUserFilterRequest = {
-  searchTerm?: string | undefined;
+  // searchTerm?: string | undefined;
   name?: string | undefined;
   email?: string | undefined;
   contactNo?: string | undefined;
@@ -20,7 +20,7 @@ export type IUserFilterRequest = {
 export const userSearchableFields: string[] = ['name', 'role', 'address'];
 
 export const userFilterableFields: string[] = [
-  'searchTerm',
+  // 'searchTerm',
   'name',
   'email',
   'contactNo',

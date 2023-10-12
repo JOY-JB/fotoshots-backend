@@ -19,30 +19,16 @@ model User {
   contactNo  String
   address    String
   profileImg String?
+  bio        String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userProfile UserProfile?
-  services    Service[]
-  bookings    Booking[]
-  reviews     Review[]
+  services Service[]
+  bookings Booking[]
+  reviews  Review[]
 
   @@map("users")
-}
-
-model UserProfile {
-  id       String  @id @default(uuid())
-  bio      String?
-  location String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
-
-  @@map("user_profiles")
 }
 
 model Service {

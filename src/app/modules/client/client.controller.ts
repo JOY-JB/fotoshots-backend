@@ -22,6 +22,48 @@ const getAllClients = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getClientById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await clientService.getClientById(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Client fetched successfully',
+    data: result,
+  });
+});
+
+const updateClientById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const payload = req.body;
+
+  const result = await clientService.updateClientById(id, payload);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Client updated successfully',
+    data: result,
+  });
+});
+
+const deleteClientById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await clientService.deleteClientById(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Client deleted successfully',
+    data: result,
+  });
+});
+
 export const clientController = {
   getAllClients,
+  getClientById,
+  updateClientById,
+  deleteClientById,
 };

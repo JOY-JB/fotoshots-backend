@@ -1,12 +1,13 @@
 import { Prisma, User } from '@prisma/client';
+// import httpStatus from 'http-status';
+// import ApiError from '../../../errors/ApiError';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-import {
-  IUserFilterRequest,
-  userSearchableFields,
-} from '../user/user.interface';
+import { IUserFilterRequest } from '../user/user.interface';
 
 const getAllClient = async (
   filters: IUserFilterRequest,
@@ -14,26 +15,14 @@ const getAllClient = async (
 ): Promise<IGenericResponse<User[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(options);
-  const { searchTerm, ...filterData } = filters;
 
   const andConditions = [];
 
-  if (searchTerm) {
+  if (Object.keys(filters).length > 0) {
     andConditions.push({
-      OR: userSearchableFields.map(field => ({
-        [field]: {
-          contains: searchTerm,
-          mode: 'insensitive',
-        },
-      })),
-    });
-  }
-
-  if (Object.keys(filterData).length > 0) {
-    andConditions.push({
-      AND: Object.keys(filterData).map(key => ({
+      AND: Object.keys(filters).map(key => ({
         [key]: {
-          equals: (filterData as any)[key],
+          equals: (filters as any)[key],
         },
       })),
     });
@@ -65,6 +54,68 @@ const getAllClient = async (
   };
 };
 
+const getClientById = async (id: string): Promise<User> => {
+  const clientData = await prisma.user.findUnique({
+    where: {
+      id,
+      role: 'CLIENT',
+    },
+  });
+
+  if (!clientData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Client does not exist!');
+  }
+
+  return clientData;
+};
+
+const updateClientById = async (
+  id: string,
+  payload: Partial<User>
+): Promise<User> => {
+  const clientData = await prisma.user.findUnique({
+    where: {
+      id,
+      role: 'CLIENT',
+    },
+  });
+
+  if (!clientData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Client does not exist!');
+  }
+
+  const result = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: payload,
+  });
+  return result;
+};
+
+const deleteClientById = async (id: string): Promise<User> => {
+  const clientData = await prisma.user.findUnique({
+    where: {
+      id,
+      role: 'CLIENT',
+    },
+  });
+
+  if (!clientData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Client does not exist!');
+  }
+
+  const result = await prisma.user.delete({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
 export const clientService = {
   getAllClient,
+  getClientById,
+  updateClientById,
+  deleteClientById,
 };
