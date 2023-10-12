@@ -9,3 +9,19 @@ export type IUserResponse = {
   address: string;
   profileImg?: string | null;
 };
+
+export type IUserFilterRequest = {
+  searchTerm?: string | undefined;
+  name?: string | undefined;
+  email?: string | undefined;
+  contactNo?: string | undefined;
+};
+
+export const userSearchableFields: string[] = ['name', 'role', 'address'];
+
+export const userFilterableFields: string[] = [
+  'searchTerm',
+  'name',
+  'email',
+  'contactNo',
+];
