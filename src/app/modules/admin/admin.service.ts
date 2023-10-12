@@ -7,7 +7,7 @@ import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
 import { IUserFilterRequest } from '../user/user.interface';
 
-const getAllPhotographers = async (
+const getAllAdmins = async (
   filters: IUserFilterRequest,
   options: IPaginationOptions
 ): Promise<IGenericResponse<User[]>> => {
@@ -35,11 +35,11 @@ const getAllPhotographers = async (
     orderBy: {
       [sortBy]: sortOrder,
     },
-    where: { ...whereConditions, role: 'PHOTOGRAPHER' },
+    where: { ...whereConditions, role: 'ADMIN' },
   });
 
   const total = await prisma.user.count({
-    where: { ...whereConditions, role: 'PHOTOGRAPHER' },
+    where: { ...whereConditions, role: 'ADMIN' },
   });
 
   return {
@@ -52,34 +52,34 @@ const getAllPhotographers = async (
   };
 };
 
-const getPhotographerById = async (id: string): Promise<User> => {
-  const photographerData = await prisma.user.findUnique({
+const getAdminById = async (id: string): Promise<User> => {
+  const AdminData = await prisma.user.findUnique({
     where: {
       id,
-      role: 'PHOTOGRAPHER',
+      role: 'ADMIN',
     },
   });
 
-  if (!photographerData) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer does not exist!');
+  if (!AdminData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not exist!');
   }
 
-  return photographerData;
+  return AdminData;
 };
 
-const updatePhotographerById = async (
+const updateAdminById = async (
   id: string,
   payload: Partial<User>
 ): Promise<User> => {
-  const photographerData = await prisma.user.findUnique({
+  const AdminData = await prisma.user.findUnique({
     where: {
       id,
-      role: 'PHOTOGRAPHER',
+      role: 'ADMIN',
     },
   });
 
-  if (!photographerData) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer does not exist!');
+  if (!AdminData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not exist!');
   }
 
   const result = await prisma.user.update({
@@ -91,16 +91,16 @@ const updatePhotographerById = async (
   return result;
 };
 
-const deletePhotographerById = async (id: string): Promise<User> => {
-  const photographerData = await prisma.user.findUnique({
+const deleteAdminById = async (id: string): Promise<User> => {
+  const AdminData = await prisma.user.findUnique({
     where: {
       id,
-      role: 'PHOTOGRAPHER',
+      role: 'ADMIN',
     },
   });
 
-  if (!photographerData) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer does not exist!');
+  if (!AdminData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Admin does not exist!');
   }
 
   const result = await prisma.user.delete({
@@ -111,9 +111,9 @@ const deletePhotographerById = async (id: string): Promise<User> => {
   return result;
 };
 
-export const photographerService = {
-  getAllPhotographers,
-  getPhotographerById,
-  updatePhotographerById,
-  deletePhotographerById,
+export const adminService = {
+  getAllAdmins,
+  getAdminById,
+  updateAdminById,
+  deleteAdminById,
 };
