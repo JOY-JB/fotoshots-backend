@@ -3,11 +3,21 @@ import { adminRoutes } from '../modules/admin/admin.routes';
 import { authRoutes } from '../modules/auth/auth.route';
 import { clientRoutes } from '../modules/client/client.routes';
 import { photographerRoutes } from '../modules/photographer/photographer.routes';
+import { reviewRoutes } from '../modules/review/review.routes';
+import { serviceRoutes } from '../modules/service/service.routes';
 import { userRoutes } from '../modules/user/user.routes';
 
 const router = express.Router();
 
 const moduleRoutes = [
+  {
+    path: '/services',
+    routes: serviceRoutes,
+  },
+  {
+    path: '/reviews',
+    routes: reviewRoutes,
+  },
   {
     path: '/admins',
     routes: adminRoutes,
