@@ -53,7 +53,9 @@ model Service {
 model Booking {
   id        String        @id @default(uuid())
   date      DateTime
-  status    BookingStatus
+  startTime DateTime
+  endTime   DateTime
+  status    BookingStatus @default(PENDING)
   userId    String
   user      User          @relation(fields: [userId], references: [id])
   serviceId String

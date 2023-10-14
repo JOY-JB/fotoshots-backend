@@ -1,6 +1,7 @@
 import express from 'express';
 import { adminRoutes } from '../modules/admin/admin.routes';
 import { authRoutes } from '../modules/auth/auth.route';
+import { bookingRoutes } from '../modules/booking/booking.routes';
 import { clientRoutes } from '../modules/client/client.routes';
 import { photographerRoutes } from '../modules/photographer/photographer.routes';
 import { reviewRoutes } from '../modules/review/review.routes';
@@ -10,6 +11,10 @@ import { userRoutes } from '../modules/user/user.routes';
 const router = express.Router();
 
 const moduleRoutes = [
+  {
+    path: '/bookings',
+    routes: bookingRoutes,
+  },
   {
     path: '/services',
     routes: serviceRoutes,
