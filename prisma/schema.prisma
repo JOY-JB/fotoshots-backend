@@ -44,8 +44,9 @@ model Service {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  bookings Booking[]
-  reviews  Review[]
+  bookings  Booking[]
+  reviews   Review[]
+  feedbacks Feedback[]
 
   @@map("services")
 }
@@ -87,10 +88,22 @@ model Feedback {
   userId  String
   user    User   @relation(fields: [userId], references: [id])
 
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("feedback")
+}
+
+model Content {
+  id        String      @id @default(uuid())
+  title     String
+  content   String
+  type      ContentType
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 enum UserRole {
@@ -107,4 +120,9 @@ enum BookingStatus {
   ADJUSTED
   COMPLETED
   CANCELED
+}
+
+enum ContentType {
+  BLOG
+  FAQ
 }
