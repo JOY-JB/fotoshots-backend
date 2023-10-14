@@ -37,8 +37,23 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateProfile = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as any;
+  const payload = req.body;
+
+  const result = await userService.updateProfile(userId, payload);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Profile updated successfully.',
+    data: result,
+  });
+});
+
 export const userController = {
   createClient,
   createPhotographer,
   createAdmin,
+  updateProfile,
 };

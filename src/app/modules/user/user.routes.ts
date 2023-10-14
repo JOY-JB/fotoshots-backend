@@ -24,4 +24,16 @@ router.post(
   userController.createAdmin
 );
 
+router.patch(
+  '/profile',
+  validateRequest(UserValidation.userProfileUpdateValidationSchema),
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.PHOTOGRAPHER,
+    ENUM_USER_ROLE.CLIENT
+  ),
+  userController.updateProfile
+);
+
 export const userRoutes = router;

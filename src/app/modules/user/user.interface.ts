@@ -10,6 +10,17 @@ export type IUserResponse = {
   profileImg?: string | null;
 };
 
+export type IUpdateUserProfile = {
+  name?: string;
+  email?: string;
+  oldPassword?: string;
+  newPassword?: string;
+  contactNo?: string;
+  address?: string;
+  profileImg?: string;
+  bio?: string;
+};
+
 export type IUserFilterRequest = {
   // searchTerm?: string | undefined;
   name?: string | undefined;

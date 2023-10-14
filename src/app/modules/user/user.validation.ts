@@ -43,7 +43,30 @@ const UserUpdateValidationSchema = z.object({
   }),
 });
 
+const userProfileUpdateValidationSchema = z.object({
+  body: z.object({
+    name: z.string().min(1, { message: 'Name is required' }).optional(),
+    email: z.string().email({ message: 'Invalid email format' }).optional(),
+    oldPassword: z
+      .string()
+      .min(6, { message: 'Old password is required' })
+      .optional(),
+    newPassword: z
+      .string()
+      .min(6, { message: 'New password is required' })
+      .optional(),
+    contactNo: z
+      .string()
+      .min(1, { message: 'Contact number is required' })
+      .optional(),
+    address: z.string().min(1, { message: 'Address is required' }).optional(),
+    profileImg: z.string().optional(),
+    bio: z.string().optional(),
+  }),
+});
+
 export const UserValidation = {
   UserValidationSchema,
   UserUpdateValidationSchema,
+  userProfileUpdateValidationSchema,
 };
