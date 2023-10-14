@@ -1,111 +1,37 @@
 import { Review } from '@prisma/client';
+import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
 import prisma from '../../../shared/prisma';
 
-// const getAllreviews = async (
-//   filters: IUserFilterRequest,
-//   options: IPaginationOptions
-// ): Promise<IGenericResponse<User[]>> => {
-//   const { page, limit, skip, sortBy, sortOrder } =
-//     paginationHelpers.calculatePagination(options);
-
-//   const andConditions = [];
-
-//   if (Object.keys(filters).length > 0) {
-//     andConditions.push({
-//       AND: Object.keys(filters).map(key => ({
-//         [key]: {
-//           equals: (filters as any)[key],
-//         },
-//       })),
-//     });
-//   }
-
-//   const whereConditions: Prisma.UserWhereInput =
-//     andConditions.length > 0 ? { AND: andConditions } : {};
-
-//   const result = await prisma.user.findMany({
-//     skip,
-//     take: limit,
-//     orderBy: {
-//       [sortBy]: sortOrder,
-//     },
-//     where: { ...whereConditions, role: 'review' },
-//   });
-
-//   const total = await prisma.user.count({
-//     where: { ...whereConditions, role: 'review' },
-//   });
-
-//   return {
-//     meta: {
-//       total,
-//       page,
-//       limit,
-//     },
-//     data: result,
-//   };
-// };
-
-// const getreviewById = async (id: string): Promise<User> => {
-//   const reviewData = await prisma.user.findUnique({
-//     where: {
-//       id,
-//       role: 'review',
-//     },
-//   });
-
-//   if (!reviewData) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'review does not exist!');
-//   }
-
-//   return reviewData;
-// };
-
-// const updatereviewById = async (
-//   id: string,
-//   payload: Partial<User>
-// ): Promise<User> => {
-//   const reviewData = await prisma.user.findUnique({
-//     where: {
-//       id,
-//       role: 'review',
-//     },
-//   });
-
-//   if (!reviewData) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'review does not exist!');
-//   }
-
-//   const result = await prisma.user.update({
-//     where: {
-//       id,
-//     },
-//     data: payload,
-//   });
-//   return result;
-// };
-
-// const deletereviewById = async (id: string): Promise<User> => {
-//   const reviewData = await prisma.user.findUnique({
-//     where: {
-//       id,
-//       role: 'review',
-//     },
-//   });
-
-//   if (!reviewData) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'review does not exist!');
-//   }
-
-//   const result = await prisma.user.delete({
-//     where: {
-//       id,
-//     },
-//   });
-//   return result;
-// };
-
 const createReview = async (data: Review): Promise<Review> => {
+  const userExists = await prisma.user.findUnique({
+    where: { id: data.userId },
+  });
+  if (!userExists) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'User not found');
+  }
+
+  const serviceExists = await prisma.service.findUnique({
+    where: { id: data.serviceId },
+  });
+  if (!serviceExists) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  const hasBooking = await prisma.booking.findFirst({
+    where: {
+      userId: data.userId,
+      serviceId: data.serviceId,
+      status: 'COMPLETED',
+    },
+  });
+  if (!hasBooking) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      "You can't leave a review for this service"
+    );
+  }
+
   const result = prisma.review.create({
     data,
   });
