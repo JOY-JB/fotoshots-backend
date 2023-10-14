@@ -4,13 +4,6 @@ import ApiError from '../../../errors/ApiError';
 import prisma from '../../../shared/prisma';
 
 const createReview = async (data: Review): Promise<Review> => {
-  const userExists = await prisma.user.findUnique({
-    where: { id: data.userId },
-  });
-  if (!userExists) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'User not found');
-  }
-
   const serviceExists = await prisma.service.findUnique({
     where: { id: data.serviceId },
   });
@@ -39,6 +32,64 @@ const createReview = async (data: Review): Promise<Review> => {
   return result;
 };
 
+const getReviewsByService = async (serviceId: string): Promise<Review[]> => {
+  const reviews = await prisma.review.findMany({
+    where: {
+      serviceId: serviceId,
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  return reviews;
+};
+
+const updateReviewById = async (
+  id: string,
+  payload: Partial<Review>
+): Promise<Review> => {
+  const reviewData = await prisma.review.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!reviewData) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Review not found for update.');
+  }
+
+  const result = await prisma.review.update({
+    where: {
+      id,
+    },
+    data: payload,
+  });
+  return result;
+};
+
+const deleteReviewById = async (id: string): Promise<Review> => {
+  const reviewData = await prisma.review.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!reviewData) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Review not found for deletion.');
+  }
+
+  const result = await prisma.review.delete({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
 export const reviewService = {
   createReview,
+  getReviewsByService,
+  updateReviewById,
+  deleteReviewById,
 };

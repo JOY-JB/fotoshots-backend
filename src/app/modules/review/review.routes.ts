@@ -13,4 +13,18 @@ router.post(
   reviewController.createReview
 );
 
+router.get('/service/:serviceId', reviewController.getReviewsByService);
+
+router.patch(
+  '/:id',
+  auth(ENUM_USER_ROLE.CLIENT),
+  reviewController.updateReviewById
+);
+
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.CLIENT),
+  reviewController.deleteReviewById
+);
+
 export const reviewRoutes = router;
