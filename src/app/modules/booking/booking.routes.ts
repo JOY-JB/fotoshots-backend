@@ -13,21 +13,80 @@ router.post(
   bookingController.createBooking
 );
 
-// router.get('/', adminController.getAllAdmins);
+router.get(
+  '/',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  bookingController.getAllBookings
+);
 
-// router.get('/:id', adminController.getAdminById);
+router.get(
+  '/service/:serviceId',
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.PHOTOGRAPHER
+  ),
+  bookingController.getBookingsByService
+);
 
-// router.patch(
-//   '/:id',
-//   validateRequest(UserValidation.UserUpdateValidationSchema),
-//   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-//   adminController.updateAdminById
-// );
+router.get(
+  '/user/:userId',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.CLIENT),
+  bookingController.getBookingsByUser
+);
 
-// router.delete(
-//   '/:id',
-//   auth(ENUM_USER_ROLE.SUPER_ADMIN),
-//   adminController.deleteAdminById
-// );
+router.get(
+  '/:bookingId',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  bookingController.getBookingById
+);
+
+router.patch(
+  '/cancel/:bookingId',
+  auth(ENUM_USER_ROLE.ADMIN),
+  bookingController.cancelBookingById
+);
+
+router.patch(
+  '/accept/:bookingId',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.PHOTOGRAPHER),
+  bookingController.acceptBooking
+);
+
+router.patch(
+  '/adjust/:bookingId',
+  validateRequest(BookingValidation.adjustedBookingValidationSchema),
+  auth(ENUM_USER_ROLE.CLIENT),
+  bookingController.adjustBooking
+);
+
+router.patch(
+  '/reject/:bookingId',
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.PHOTOGRAPHER
+  ),
+  bookingController.rejectBooking
+);
+
+router.patch(
+  '/complete/:bookingId',
+  auth(ENUM_USER_ROLE.PHOTOGRAPHER),
+  bookingController.completeBooking
+);
+
+router.patch(
+  '/:bookingId',
+  validateRequest(BookingValidation.updateBookingValidationSchema),
+  auth(ENUM_USER_ROLE.CLIENT),
+  bookingController.updateBookingById
+);
+
+router.delete(
+  '/delete/:bookingId',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  bookingController.deleteBooking
+);
 
 export const bookingRoutes = router;
