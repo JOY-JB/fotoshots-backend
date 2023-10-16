@@ -8,6 +8,7 @@ import { feedbackRoutes } from '../modules/feedback/feedback.routes';
 import { photographerRoutes } from '../modules/photographer/photographer.routes';
 import { reviewRoutes } from '../modules/review/review.routes';
 import { serviceRoutes } from '../modules/service/service.routes';
+import { superAdminRoutes } from '../modules/superadmin/superadmin.routes';
 import { userRoutes } from '../modules/user/user.routes';
 
 const router = express.Router();
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: '/reviews',
     routes: reviewRoutes,
+  },
+  {
+    path: '/superadmins',
+    routes: superAdminRoutes,
   },
   {
     path: '/admins',

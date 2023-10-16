@@ -16,8 +16,6 @@ const getAllClient = async (
 
   const andConditions = [];
 
-  console.log(filters.email);
-
   if (Object.keys(filters).length > 0) {
     andConditions.push({
       AND: Object.keys(filters).map(key => ({
