@@ -1,7 +1,10 @@
 import { User } from '@prisma/client';
 
 import httpStatus from 'http-status';
+import { Secret } from 'jsonwebtoken';
+import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
 import { utils } from '../../../shared/utils';
 import { IUpdateUserProfile, IUserResponse } from './user.interface';
@@ -22,7 +25,14 @@ const createClient = async (data: User): Promise<IUserResponse> => {
       profileImg: true,
     },
   });
-  return result;
+
+  const accessToken = jwtHelpers.createToken(
+    { userId: (await result).id, role: 'CLIENT' },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  return { accessToken, ...result };
 };
 
 const createPhotographer = async (data: User): Promise<IUserResponse> => {
@@ -41,7 +51,14 @@ const createPhotographer = async (data: User): Promise<IUserResponse> => {
       profileImg: true,
     },
   });
-  return result;
+
+  const accessToken = jwtHelpers.createToken(
+    { userId: (await result).id, role: 'PHOTOGRAPHER' },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  return { accessToken, ...result };
 };
 
 const createAdmin = async (data: User): Promise<IUserResponse> => {
@@ -60,6 +77,7 @@ const createAdmin = async (data: User): Promise<IUserResponse> => {
       profileImg: true,
     },
   });
+
   return result;
 };
 
