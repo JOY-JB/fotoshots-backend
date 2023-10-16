@@ -9,7 +9,7 @@ import prisma from '../../../shared/prisma';
 import { utils } from '../../../shared/utils';
 import { IUpdateUserProfile, IUserResponse } from './user.interface';
 
-const createClient = async (data: User): Promise<IUserResponse> => {
+const createClient = async (data: User) => {
   data.role = 'CLIENT';
   data.password = await utils.hashedPassword(data.password);
 
@@ -32,10 +32,10 @@ const createClient = async (data: User): Promise<IUserResponse> => {
     config.jwt.expires_in as string
   );
 
-  return { accessToken, ...result };
+  return { accessToken };
 };
 
-const createPhotographer = async (data: User): Promise<IUserResponse> => {
+const createPhotographer = async (data: User) => {
   data.role = 'PHOTOGRAPHER';
   data.password = await utils.hashedPassword(data.password);
 
@@ -58,7 +58,7 @@ const createPhotographer = async (data: User): Promise<IUserResponse> => {
     config.jwt.expires_in as string
   );
 
-  return { accessToken, ...result };
+  return { accessToken };
 };
 
 const createAdmin = async (data: User): Promise<IUserResponse> => {

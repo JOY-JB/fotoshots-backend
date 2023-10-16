@@ -8,6 +8,7 @@ export type IUserResponse = {
   contactNo: string;
   address: string;
   profileImg?: string | null;
+  accessToken?: string;
 };
 
 export type IUpdateUserProfile = {
