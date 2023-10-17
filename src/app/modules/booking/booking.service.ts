@@ -52,15 +52,42 @@ const getAllBookings = async (
 
   const andConditions = [];
 
+  // if (Object.keys(filters).length > 0) {
+  //   andConditions.push({
+  //     AND: Object.keys(filters).map(key => ({
+  //       [key]: {
+  //         equals: (filters as any)[key],
+  //       },
+  //     })),
+  //   });
+  // }
+
   if (Object.keys(filters).length > 0) {
     andConditions.push({
-      AND: Object.keys(filters).map(key => ({
-        [key]: {
-          equals: (filters as any)[key],
-        },
-      })),
+      AND: Object.keys(filters).map(key => {
+        if (key === 'date') {
+          const frontEndDateString = (filters as any)[key];
+          const formattedDate = frontEndDateString.substring(0, 10);
+
+          return {
+            date: {
+              // gte: (filters as any)[key],
+              gte: formattedDate + 'T00:00:00Z',
+              lt: formattedDate + 'T23:59:59Z',
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filters as any)[key],
+            },
+          };
+        }
+      }),
     });
   }
+
+  console.log(filters.date);
 
   const whereConditions: Prisma.BookingWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
@@ -72,6 +99,10 @@ const getAllBookings = async (
       [sortBy]: sortOrder,
     },
     where: whereConditions,
+    include: {
+      user: true,
+      service: true,
+    },
   });
 
   const total = await prisma.booking.count({

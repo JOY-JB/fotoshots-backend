@@ -79,7 +79,7 @@ router.patch(
 router.patch(
   '/:bookingId',
   validateRequest(BookingValidation.updateBookingValidationSchema),
-  auth(ENUM_USER_ROLE.CLIENT),
+  auth(ENUM_USER_ROLE.CLIENT, ENUM_USER_ROLE.ADMIN),
   bookingController.updateBookingById
 );
 
