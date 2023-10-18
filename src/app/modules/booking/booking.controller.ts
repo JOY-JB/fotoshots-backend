@@ -89,6 +89,20 @@ const getBookingsByUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getBookingsByPhotographer = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await bookingService.getBookingsByPhotographer(id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Photographer Booking fetched successfully',
+      data: result,
+    });
+  }
+);
 
 const getBookingsByService = catchAsync(async (req: Request, res: Response) => {
   const { serviceId } = req.params;
@@ -181,6 +195,7 @@ export const bookingController = {
   updateBookingById,
   cancelBookingById,
   getBookingsByUser,
+  getBookingsByPhotographer,
   getBookingsByService,
   acceptBooking,
   adjustBooking,

@@ -106,6 +106,19 @@ const getAllFAQs = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getContentById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await contentService.getContentById(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Content fetched successfully',
+    data: result,
+  });
+});
+
 export const contentController = {
   createBlogPost,
   updateBlogPostById,
@@ -115,4 +128,5 @@ export const contentController = {
   updateFAQById,
   deleteFAQById,
   getAllFAQs,
+  getContentById,
 };

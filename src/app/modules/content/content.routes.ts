@@ -51,4 +51,6 @@ router.delete(
 
 router.get('/faq', contentController.getAllFAQs);
 
+router.get('/:id', contentController.getContentById);
+
 export const contentRoutes = router;

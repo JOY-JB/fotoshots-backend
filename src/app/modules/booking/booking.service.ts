@@ -202,6 +202,21 @@ const getBookingsByUser = async (userId: string): Promise<Booking[]> => {
   return bookings;
 };
 
+const getBookingsByPhotographer = async (id: string): Promise<Booking[]> => {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      service: {
+        userId: id,
+      },
+    },
+    include: {
+      user: true,
+      service: true,
+    },
+  });
+  return bookings;
+};
+
 const getBookingsByService = async (serviceId: string): Promise<Booking[]> => {
   const bookings = await prisma.booking.findMany({
     where: {
@@ -344,6 +359,7 @@ export const bookingService = {
   getAllBookings,
   getBookingById,
   updateBookingById,
+  getBookingsByPhotographer,
   cancelBookingById,
   getBookingsByUser,
   getBookingsByService,

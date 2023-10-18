@@ -36,6 +36,16 @@ router.get(
 );
 
 router.get(
+  '/photographer/:userId',
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.PHOTOGRAPHER
+  ),
+  bookingController.getBookingsByPhotographer
+);
+
+router.get(
   '/:bookingId',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   bookingController.getBookingById

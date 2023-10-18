@@ -132,6 +132,20 @@ const getAllFAQs = async (): Promise<Content[]> => {
   return faqs;
 };
 
+const getContentById = async (id: string): Promise<Content> => {
+  const contentData = await prisma.content.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!contentData) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Content not found!');
+  }
+
+  return contentData;
+};
+
 export const contentService = {
   createBlogPost,
   updateBlogPostById,
@@ -141,4 +155,5 @@ export const contentService = {
   updateFAQById,
   deleteFAQById,
   getAllFAQs,
+  getContentById,
 };
