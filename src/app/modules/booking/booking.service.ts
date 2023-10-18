@@ -52,16 +52,6 @@ const getAllBookings = async (
 
   const andConditions = [];
 
-  // if (Object.keys(filters).length > 0) {
-  //   andConditions.push({
-  //     AND: Object.keys(filters).map(key => ({
-  //       [key]: {
-  //         equals: (filters as any)[key],
-  //       },
-  //     })),
-  //   });
-  // }
-
   if (Object.keys(filters).length > 0) {
     andConditions.push({
       AND: Object.keys(filters).map(key => {
@@ -71,7 +61,6 @@ const getAllBookings = async (
 
           return {
             date: {
-              // gte: (filters as any)[key],
               gte: formattedDate + 'T00:00:00Z',
               lt: formattedDate + 'T23:59:59Z',
             },
@@ -86,8 +75,6 @@ const getAllBookings = async (
       }),
     });
   }
-
-  console.log(filters.date);
 
   const whereConditions: Prisma.BookingWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
@@ -190,31 +177,138 @@ const cancelBookingById = async (
   return result;
 };
 
-const getBookingsByUser = async (userId: string): Promise<Booking[]> => {
+const getBookingsByUser = async (
+  filters: IBookingFilterRequest,
+  options: IPaginationOptions,
+  userId: string
+): Promise<IGenericResponse<Booking[]>> => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(options);
+
+  const andConditions = [];
+
+  if (Object.keys(filters).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filters).map(key => {
+        if (key === 'date') {
+          const frontEndDateString = (filters as any)[key];
+          const formattedDate = frontEndDateString.substring(0, 10);
+
+          return {
+            date: {
+              gte: formattedDate + 'T00:00:00Z',
+              lt: formattedDate + 'T23:59:59Z',
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filters as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
+
+  const whereConditions: Prisma.BookingWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
   const bookings = await prisma.booking.findMany({
+    skip,
+    take: limit,
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
     where: {
       userId,
+      ...whereConditions,
     },
     include: {
       service: true,
+      user: true,
     },
   });
-  return bookings;
+
+  const total = await prisma.booking.count({
+    where: whereConditions,
+  });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: bookings,
+  };
 };
 
-const getBookingsByPhotographer = async (id: string): Promise<Booking[]> => {
+const getBookingsByPhotographer = async (
+  filters: IBookingFilterRequest,
+  options: IPaginationOptions,
+  id: string
+): Promise<IGenericResponse<Booking[]>> => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(options);
+
+  const andConditions = [];
+
+  if (Object.keys(filters).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filters).map(key => {
+        if (key === 'date') {
+          const frontEndDateString = (filters as any)[key];
+          const formattedDate = frontEndDateString.substring(0, 10);
+
+          return {
+            date: {
+              gte: formattedDate + 'T00:00:00Z',
+              lt: formattedDate + 'T23:59:59Z',
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filters as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
+
+  const whereConditions: Prisma.BookingWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
   const bookings = await prisma.booking.findMany({
+    skip,
+    take: limit,
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
     where: {
       service: {
         userId: id,
       },
+      ...whereConditions,
     },
     include: {
       user: true,
       service: true,
     },
   });
-  return bookings;
+
+  const total = await prisma.booking.count({
+    where: whereConditions,
+  });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: bookings,
+  };
 };
 
 const getBookingsByService = async (serviceId: string): Promise<Booking[]> => {

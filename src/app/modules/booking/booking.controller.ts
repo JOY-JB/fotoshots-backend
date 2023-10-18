@@ -79,8 +79,18 @@ const cancelBookingById = catchAsync(async (req: Request, res: Response) => {
 
 const getBookingsByUser = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
+  const filters = pick(req.query, bookingFilterableFields);
+  const options = pick(req.query, paginationFields);
 
-  const result = await bookingService.getBookingsByUser(userId);
+  console.log('userId', userId);
+  console.log('filters', filters);
+  console.log('options', options);
+
+  const result = await bookingService.getBookingsByUser(
+    filters,
+    options,
+    userId
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -91,15 +101,22 @@ const getBookingsByUser = catchAsync(async (req: Request, res: Response) => {
 });
 const getBookingsByPhotographer = catchAsync(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { userId } = req.params;
+    const filters = pick(req.query, bookingFilterableFields);
+    const options = pick(req.query, paginationFields);
 
-    const result = await bookingService.getBookingsByPhotographer(id);
+    const result = await bookingService.getBookingsByPhotographer(
+      filters,
+      options,
+      userId
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Photographer Booking fetched successfully',
-      data: result,
+      meta: result.meta,
+      data: result.data,
     });
   }
 );
