@@ -16,7 +16,7 @@ router.post(
 
 router.get('/service/:serviceId', feedbackController.getFeedbacksByService);
 
-router.get('/:userId', feedbackController.getFeedbacksByService);
+router.get('/:userId', feedbackController.getFeedbacksByUser);
 
 router.patch(
   '/:id',

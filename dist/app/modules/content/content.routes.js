@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.contentRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const user_1 = require("../../../enums/user");
+const auth_1 = __importDefault(require("../../middlewares/auth"));
+const validateRequest_1 = __importDefault(require("../../middlewares/validateRequest"));
+const content_controller_1 = require("./content.controller");
+const content_validation_1 = require("./content.validation");
+const router = express_1.default.Router();
+router.post('/blog', (0, validateRequest_1.default)(content_validation_1.ContentValidation.ContentValidationSchema), (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), content_controller_1.contentController.createBlogPost);
+router.patch('/blog/:id', (0, validateRequest_1.default)(content_validation_1.ContentValidation.ContentValidationSchema), (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), content_controller_1.contentController.updateBlogPostById);
+router.delete('/blog/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), content_controller_1.contentController.deleteBlogPostById);
+router.get('/blog', content_controller_1.contentController.getAllBlogPosts);
+router.post('/faq', (0, validateRequest_1.default)(content_validation_1.ContentValidation.ContentValidationSchema), (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), content_controller_1.contentController.createFAQ);
+router.patch('/faq/:id', (0, validateRequest_1.default)(content_validation_1.ContentValidation.ContentValidationSchema), (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), content_controller_1.contentController.updateFAQById);
+router.delete('/faq/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.ADMIN), content_controller_1.contentController.deleteFAQById);
+router.get('/faq', content_controller_1.contentController.getAllFAQs);
+router.get('/:id', content_controller_1.contentController.getContentById);
+exports.contentRoutes = router;
