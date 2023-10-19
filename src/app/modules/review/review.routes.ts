@@ -17,7 +17,9 @@ router.get('/', reviewController.getAllReviews);
 
 router.get('/service/:serviceId', reviewController.getReviewsByService);
 
-router.get('/:userId', reviewController.getReviewsByService);
+router.get('/user/:userId', reviewController.getReviewsByUser);
+
+router.get('/:id', reviewController.getReviewsById);
 
 router.patch(
   '/:id',

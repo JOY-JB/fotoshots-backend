@@ -68,6 +68,19 @@ const getReviewsByService = async (serviceId: string): Promise<Review[]> => {
 
   return reviews;
 };
+const getReviewsById = async (id: string): Promise<Review | null> => {
+  const reviews = await prisma.review.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      user: true,
+      service: true,
+    },
+  });
+
+  return reviews;
+};
 
 const updateReviewById = async (
   id: string,
@@ -118,4 +131,5 @@ export const reviewService = {
   deleteReviewById,
   getAllReviews,
   getReviewsByUser,
+  getReviewsById,
 };

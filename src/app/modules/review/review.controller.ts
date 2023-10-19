@@ -32,7 +32,7 @@ const getAllReviews = catchAsync(async (req: Request, res: Response) => {
 const getReviewsByUser = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
 
-  const reviews = await reviewService.getReviewsByService(userId);
+  const reviews = await reviewService.getReviewsByUser(userId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -46,6 +46,18 @@ const getReviewsByService = catchAsync(async (req: Request, res: Response) => {
   const { serviceId } = req.params;
 
   const reviews = await reviewService.getReviewsByService(serviceId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Reviews by Service fetched successfully!',
+    data: reviews,
+  });
+});
+const getReviewsById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const reviews = await reviewService.getReviewsById(id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -89,4 +101,5 @@ export const reviewController = {
   getAllReviews,
   deleteReviewById,
   getReviewsByUser,
+  getReviewsById,
 };
