@@ -32,6 +32,16 @@ const createReview = async (data: Review): Promise<Review> => {
   return result;
 };
 
+const getAllReviews = async (): Promise<Review[]> => {
+  const reviews = await prisma.review.findMany({
+    include: {
+      user: true,
+    },
+  });
+
+  return reviews;
+};
+
 const getReviewsByService = async (serviceId: string): Promise<Review[]> => {
   const reviews = await prisma.review.findMany({
     where: {
@@ -92,4 +102,5 @@ export const reviewService = {
   getReviewsByService,
   updateReviewById,
   deleteReviewById,
+  getAllReviews,
 };

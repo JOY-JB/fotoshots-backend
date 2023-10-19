@@ -82,10 +82,6 @@ const getBookingsByUser = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, bookingFilterableFields);
   const options = pick(req.query, paginationFields);
 
-  console.log('userId', userId);
-  console.log('filters', filters);
-  console.log('options', options);
-
   const result = await bookingService.getBookingsByUser(
     filters,
     options,
@@ -96,7 +92,8 @@ const getBookingsByUser = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User Booking fetched successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 const getBookingsByPhotographer = catchAsync(

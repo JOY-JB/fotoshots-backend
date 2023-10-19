@@ -60,6 +60,9 @@ const getAllServices = async (
       [sortBy]: sortOrder,
     },
     where: whereConditions,
+    include: {
+      user: true,
+    },
   });
 
   const total = await prisma.service.count({

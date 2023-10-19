@@ -231,7 +231,10 @@ const getBookingsByUser = async (
   });
 
   const total = await prisma.booking.count({
-    where: whereConditions,
+    where: {
+      userId,
+      ...whereConditions,
+    },
   });
   return {
     meta: {
@@ -299,7 +302,12 @@ const getBookingsByPhotographer = async (
   });
 
   const total = await prisma.booking.count({
-    where: whereConditions,
+    where: {
+      service: {
+        userId: id,
+      },
+      ...whereConditions,
+    },
   });
   return {
     meta: {
@@ -328,8 +336,14 @@ const acceptBooking = async (bookingId: string): Promise<Booking> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Booking not found');
   }
 
-  if (booking.status !== BookingStatus.PENDING) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Booking status is not pending');
+  if (
+    booking.status !== BookingStatus.PENDING &&
+    booking.status !== BookingStatus.ADJUSTED
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Booking status is not pending or adjusted'
+    );
   }
 
   const acceptedBooking = await prisma.booking.update({

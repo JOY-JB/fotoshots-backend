@@ -53,7 +53,7 @@ router.get(
 
 router.patch(
   '/cancel/:bookingId',
-  auth(ENUM_USER_ROLE.ADMIN),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.CLIENT),
   bookingController.cancelBookingById
 );
 

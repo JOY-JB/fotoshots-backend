@@ -13,6 +13,8 @@ router.post(
   reviewController.createReview
 );
 
+router.get('/', reviewController.getAllReviews);
+
 router.get('/service/:serviceId', reviewController.getReviewsByService);
 
 router.patch(
