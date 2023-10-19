@@ -17,6 +17,8 @@ router.get('/', reviewController.getAllReviews);
 
 router.get('/service/:serviceId', reviewController.getReviewsByService);
 
+router.get('/:userId', reviewController.getReviewsByService);
+
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.CLIENT),

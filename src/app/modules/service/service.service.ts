@@ -11,7 +11,7 @@ import { IServiceFilterRequest } from './service.interaface';
 const getAllServices = async (
   filters: IServiceFilterRequest,
   options: IPaginationOptions
-) => {
+): Promise<IGenericResponse<Service[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers.calculatePagination(options);
   const { searchTerm, ...filterData } = filters;
