@@ -16,6 +16,8 @@ router.post(
 
 router.get('/service/:serviceId', feedbackController.getFeedbacksByService);
 
+router.get('/:userId', feedbackController.getFeedbacksByService);
+
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.CLIENT),

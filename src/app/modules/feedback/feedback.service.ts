@@ -47,6 +47,19 @@ const getFeedbacksByService = async (
 
   return feedback;
 };
+const getFeedbacksByUser = async (userId: string): Promise<Feedback[]> => {
+  const feedback = await prisma.feedback.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      user: true,
+      service: true,
+    },
+  });
+
+  return feedback;
+};
 
 const updateFeedbackById = async (
   id: string,
@@ -98,4 +111,5 @@ export const feedbackService = {
   getFeedbacksByService,
   updateFeedbackById,
   deleteFeedbackById,
+  getFeedbacksByUser,
 };

@@ -32,6 +32,18 @@ const getFeedbacksByService = catchAsync(
     });
   }
 );
+const getFeedbacksByUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  const feedbacks = await feedbackService.getFeedbacksByUser(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User Feedbacks fetched successfully!',
+    data: feedbacks,
+  });
+});
 
 const updateFeedbackById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -65,4 +77,5 @@ export const feedbackController = {
   getFeedbacksByService,
   updateFeedbackById,
   deleteFeedbackById,
+  getFeedbacksByUser,
 };
