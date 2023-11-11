@@ -181,8 +181,21 @@ const deleteServiceById = async (id: string): Promise<Service> => {
     },
   });
 
+  const isBookingExist = await prisma.booking.findFirst({
+    where: {
+      serviceId: id,
+    },
+  });
+
   if (!serviceData) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Service not Found!');
+  }
+
+  if (isBookingExist) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Unable to delete service, Service has active bookings!'
+    );
   }
 
   const result = await prisma.service.delete({

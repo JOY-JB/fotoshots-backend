@@ -169,8 +169,16 @@ const deleteServiceById = (id) => __awaiter(void 0, void 0, void 0, function* ()
             id,
         },
     });
+    const isBookingExist = yield prisma_1.default.booking.findFirst({
+        where: {
+            serviceId: id,
+        },
+    });
     if (!serviceData) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Service not Found!');
+    }
+    if (isBookingExist) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Unable to delete service, Service has active bookings!');
     }
     const result = yield prisma_1.default.service.delete({
         where: {
