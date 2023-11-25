@@ -10,6 +10,19 @@ import { utils } from '../../../shared/utils';
 import { IUpdateUserProfile, IUserResponse } from './user.interface';
 
 const createClient = async (data: User) => {
+  const isEmailExist = await prisma.user.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+
+  if (isEmailExist) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'This Email is Already Registered! Please choose another one'
+    );
+  }
+
   data.role = 'CLIENT';
   data.password = await utils.hashedPassword(data.password);
 
@@ -36,6 +49,19 @@ const createClient = async (data: User) => {
 };
 
 const createPhotographer = async (data: User) => {
+  const isEmailExist = await prisma.user.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+
+  if (isEmailExist) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'This Email is Already Registered! Please choose another one'
+    );
+  }
+
   data.role = 'PHOTOGRAPHER';
   data.password = await utils.hashedPassword(data.password);
 
@@ -62,6 +88,19 @@ const createPhotographer = async (data: User) => {
 };
 
 const createAdmin = async (data: User): Promise<IUserResponse> => {
+  const isEmailExist = await prisma.user.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+
+  if (isEmailExist) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'This Email is Already Registered! Please choose another one'
+    );
+  }
+
   data.role = 'ADMIN';
   data.password = await utils.hashedPassword(data.password);
 
