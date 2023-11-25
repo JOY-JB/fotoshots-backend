@@ -82,6 +82,19 @@ const updatePhotographerById = async (
     throw new ApiError(httpStatus.BAD_REQUEST, 'Photographer does not exist!');
   }
 
+  const isEmailExist = await prisma.user.findUnique({
+    where: {
+      email: payload.email,
+    },
+  });
+
+  if (isEmailExist && isEmailExist.email !== photographerData.email) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'This Email is Already Registered! Please choose another one'
+    );
+  }
+
   const result = await prisma.user.update({
     where: {
       id,

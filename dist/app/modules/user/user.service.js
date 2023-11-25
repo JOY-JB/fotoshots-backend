@@ -20,6 +20,14 @@ const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const utils_1 = require("../../../shared/utils");
 const createClient = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const isEmailExist = yield prisma_1.default.user.findUnique({
+        where: {
+            email: data.email,
+        },
+    });
+    if (isEmailExist) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'This Email is Already Registered! Please choose another one');
+    }
     data.role = 'CLIENT';
     data.password = yield utils_1.utils.hashedPassword(data.password);
     const result = prisma_1.default.user.create({
@@ -38,6 +46,14 @@ const createClient = (data) => __awaiter(void 0, void 0, void 0, function* () {
     return { accessToken };
 });
 const createPhotographer = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const isEmailExist = yield prisma_1.default.user.findUnique({
+        where: {
+            email: data.email,
+        },
+    });
+    if (isEmailExist) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'This Email is Already Registered! Please choose another one');
+    }
     data.role = 'PHOTOGRAPHER';
     data.password = yield utils_1.utils.hashedPassword(data.password);
     const result = prisma_1.default.user.create({
@@ -56,6 +72,14 @@ const createPhotographer = (data) => __awaiter(void 0, void 0, void 0, function*
     return { accessToken };
 });
 const createAdmin = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const isEmailExist = yield prisma_1.default.user.findUnique({
+        where: {
+            email: data.email,
+        },
+    });
+    if (isEmailExist) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'This Email is Already Registered! Please choose another one');
+    }
     data.role = 'ADMIN';
     data.password = yield utils_1.utils.hashedPassword(data.password);
     const result = prisma_1.default.user.create({
@@ -80,6 +104,14 @@ const updateProfile = (userId, payload) => __awaiter(void 0, void 0, void 0, fun
     });
     if (!userData) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'User not Found!');
+    }
+    const isEmailExist = yield prisma_1.default.user.findUnique({
+        where: {
+            email: payload.email,
+        },
+    });
+    if (isEmailExist && isEmailExist.email !== userData.email) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'This Email is Already Registered! Please choose another one');
     }
     if (payload.oldPassword) {
         const isPasswordMatch = yield utils_1.utils.isPasswordMatched(payload.oldPassword, userData.password);

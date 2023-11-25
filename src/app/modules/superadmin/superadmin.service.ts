@@ -55,6 +55,19 @@ const updateSuperAdminById = async (
     throw new ApiError(httpStatus.BAD_REQUEST, 'Super Admin does not exist!');
   }
 
+  const isEmailExist = await prisma.user.findUnique({
+    where: {
+      email: payload.email,
+    },
+  });
+
+  if (isEmailExist && isEmailExist.email !== superAdminData.email) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'This Email is Already Registered! Please choose another one'
+    );
+  }
+
   const result = await prisma.user.update({
     where: {
       id,
