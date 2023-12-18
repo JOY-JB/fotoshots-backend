@@ -72,6 +72,14 @@ const updateAdminById = (id, payload) => __awaiter(void 0, void 0, void 0, funct
     if (!AdminData) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Admin does not exist!');
     }
+    const isEmailExist = yield prisma_1.default.user.findUnique({
+        where: {
+            email: payload.email,
+        },
+    });
+    if (isEmailExist && isEmailExist.email !== AdminData.email) {
+        throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'This Email is Already Registered! Please choose another one');
+    }
     const result = yield prisma_1.default.user.update({
         where: {
             id,
